@@ -12,16 +12,14 @@ import java.sql.Date;
 @Table(name = Order.ORDER_TABLE_NAME)
 public class Order {
 
-    public static final String ORDER_TABLE_NAME = "ORDER";
+    public static final String ORDER_TABLE_NAME = "ORDERS";
 
     @Id
     @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String orderId;
     private String customerId;
-
-
-    private Date date ;
+    private Date date;
     private Integer totalPrice=0;
     private String address;
 

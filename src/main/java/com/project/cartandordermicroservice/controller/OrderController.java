@@ -11,19 +11,18 @@ import com.project.cartandordermicroservice.service.OrderService;
 import com.project.cartandordermicroservice.service.OrderedItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/order")
 public class OrderController {
 
 
     @Autowired
     OrderService orderService;
 
-    public ResponseDto<Order> order(OrderDto orderDto){
+    @PostMapping("/")
+    public ResponseDto<Order> order(@RequestBody OrderDto orderDto){
         ResponseDto<Order> responseDto=new ResponseDto<>();
         try {
             Order order=orderService.createOrder(orderDto);

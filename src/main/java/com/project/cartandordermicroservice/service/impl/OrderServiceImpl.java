@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
-
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -53,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
             for (OrderedItemDto orderedItemDto : orderedItemDtos) {
                 OrderedItem orderedItem = new OrderedItem();
                 BeanUtils.copyProperties(orderedItemDto, orderedItem);
-                orderedItem.setOrderId(createdOrder.getOrderId());
+                orderedItem.setOrderId(orderRepository.findById(createdOrder.getOrderId()).get());
                 totalPrice += orderedItem.getPrice() * orderedItem.getQuantity();
                 orderedItemService.addOrderedItem(orderedItem);
                 cartService.removeCartItem(orderDto.getCustomerId(), orderedItem.getProductId(), orderedItem.getMerchantId());

@@ -7,10 +7,7 @@ import com.project.cartandordermicroservice.entity.Cart;
 import com.project.cartandordermicroservice.service.CartService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cart")
@@ -19,12 +16,12 @@ public class CartController {
     @Autowired
     CartService cartService;
 
-    @GetMapping("/getCart/{customerId}")
+    @GetMapping("/{customerId}")
     public ResponseDto<Cart> getCart(@PathVariable("customerId") String customerId){
         ResponseDto<Cart> responseDto=new ResponseDto<>();
         try {
             Iterable<Cart> cartItems=cartService.getCart(customerId);
-            responseDto.setData(cartItems);
+            responseDto.setData((Cart) cartItems);
             responseDto.setSuccess(true);
             }catch (Exception e) {
                 responseDto.setSuccess(false);
@@ -34,8 +31,8 @@ public class CartController {
 
     }
 
-
-    public void insertIntoCart(Iterable<CartDto> cartDto){
+    @PostMapping("/")
+    public void insertIntoCart(@RequestBody Iterable<CartDto> cartDto){
         Cart cart=new Cart();
         for (CartDto cartItem:cartDto) {
             BeanUtils.copyProperties(cartDto,cart);
@@ -44,7 +41,8 @@ public class CartController {
     }
 
 
-    ResponseDto<Cart> deleteCartItem(String customerId, String productId, String merchantId){
+    @DeleteMapping("/")
+    ResponseDto<Cart> deleteCartItem(@RequestBody String customerId, String productId, String merchantId){
         ResponseDto<Cart> responseDto=new ResponseDto<>();
         try{
             cartService.removeCartItem(customerId,productId,merchantId);
