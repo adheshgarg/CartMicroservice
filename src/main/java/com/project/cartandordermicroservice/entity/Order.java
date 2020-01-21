@@ -19,8 +19,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String orderId;
     private String customerId;
-    private Date date;
-    private Integer totalPrice;
+
+
+    private Date date ;
+    private Integer totalPrice=0;
     private String address;
 
 }

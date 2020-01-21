@@ -25,4 +25,15 @@ public class CartServiceImpl implements CartService {
             insertedItem=cartRepository.save(cartItem);
 
     }
+
+
+    @Override
+    public void removeCart(String customerId) {
+        cartRepository.removeCartByCustomer(customerId);
+    }
+
+    @Override
+    public void removeCartItem(String customerId, String productId, String merchantId) {
+        cartRepository.removeCartItem(customerId,productId,merchantId);
+    }
 }

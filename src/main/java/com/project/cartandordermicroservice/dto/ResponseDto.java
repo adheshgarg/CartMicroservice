@@ -7,6 +7,6 @@ public class ResponseDto<T> {
 
     private Boolean success;
     private String message;
-    private Iterable<T> data;
+    private T data;
 
 }

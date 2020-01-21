@@ -18,9 +18,9 @@ public class OrderedItem {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order orderId;
+ //   @ManyToOne
+ //   @JoinColumn(name = "order_id")
+    private String orderId;
     private String merchantId;
     private String productId;
     private Integer price;

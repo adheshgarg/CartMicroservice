@@ -43,4 +43,16 @@ public class CartController {
         }
     }
 
+
+    ResponseDto<Cart> deleteCartItem(String customerId, String productId, String merchantId){
+        ResponseDto<Cart> responseDto=new ResponseDto<>();
+        try{
+            cartService.removeCartItem(customerId,productId,merchantId);
+            responseDto.setSuccess(true);
+        }catch (Exception exception){
+            responseDto.setSuccess(false);
+        }
+        return responseDto;
+    }
+
 }

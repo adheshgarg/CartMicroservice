@@ -9,7 +9,7 @@ import lombok.Setter;
 public class OrderedItemDto {
 
     private String id;
-    private Order orderId;
+    private String orderId;
     private String merchantId;
     private String productId;
     private Integer price;

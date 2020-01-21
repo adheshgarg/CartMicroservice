@@ -14,5 +14,6 @@ public class OrderDto {
     private Date date;
     private Integer totalPrice;
     private String address;
+    private Iterable<OrderedItemDto> orderedItemDto;
 
 }
