@@ -15,8 +15,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -36,29 +37,31 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackOn = Exception.class)
     public Order createOrder(OrderDto orderDto) {
         Order order=new Order();
-        Iterable<OrderedItemDto> orderedItemDtos=orderDto.getOrderedItemDto();
+        List<OrderedItemDto> orderedItemDtos=orderDto.getOrderedItemDto();
         BeanUtils.copyProperties(orderDto,order, String.valueOf(orderedItemDtos));
+        order.setDate(new Date());
         Order createdOrder=orderRepository.save(order);         //new order
-
-        final String uri="http://localhost:8080/productdetails/updateStock";
+        int totalPrice = 0;
+        final String uri="http://localhost:8080/productdetails/stockUpdate";
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Iterable<OrderedItemDto>> entityReq=new HttpEntity<>(orderedItemDtos,headers);
         RestTemplate restTemplate=new RestTemplate();
         boolean result=restTemplate.postForObject(uri,entityReq,boolean.class,orderDto);
         if(result) {
-            int totalPrice = 0;
             for (OrderedItemDto orderedItemDto : orderedItemDtos) {
                 OrderedItem orderedItem = new OrderedItem();
                 BeanUtils.copyProperties(orderedItemDto, orderedItem);
-                orderedItem.setOrderId(orderRepository.findById(createdOrder.getOrderId()).get());
-                totalPrice += orderedItem.getPrice() * orderedItem.getQuantity();
+                orderedItem.setProductPrice(orderedItemDto.getProductPrice());
+                orderedItem.setQuantityBrought(orderedItemDto.getQuantityBrought());
+                orderedItem.setOrderId(createdOrder);
+                totalPrice += orderedItem.getProductPrice() * orderedItem.getQuantityBrought();
                 orderedItemService.addOrderedItem(orderedItem);
                 cartService.removeCartItem(orderDto.getCustomerId(), orderedItem.getProductId(), orderedItem.getMerchantId());
             }
-            order.setTotalPrice(totalPrice);
+            createdOrder.setTotalPrice(totalPrice);
         }
-        return order;
+        return createdOrder;
     }
 
 }

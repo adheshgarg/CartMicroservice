@@ -9,6 +9,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/cart")
 public class CartController {
@@ -20,26 +24,25 @@ public class CartController {
     public ResponseDto<Cart> getCart(@PathVariable("customerId") String customerId){
         ResponseDto<Cart> responseDto=new ResponseDto<>();
         try {
-            Iterable<Cart> cartItems=cartService.getCart(customerId);
+            List<Cart> cartItems=cartService.getCart(customerId);
             responseDto.setData((Cart) cartItems);
             responseDto.setSuccess(true);
             }catch (Exception e) {
                 responseDto.setSuccess(false);
-                responseDto.setMessage("Couldn't retrive items from your cart");
+                responseDto.setMessage("Couldn't retrieve items from your cart");
             }
         return responseDto;
 
     }
 
     @PostMapping("/")
-    public void insertIntoCart(@RequestBody Iterable<CartDto> cartDto){
+    public void insertIntoCart(@RequestBody List<CartDto> cartDtoList){
         Cart cart=new Cart();
-        for (CartDto cartItem:cartDto) {
-            BeanUtils.copyProperties(cartDto,cart);
+        for (CartDto cartItem:cartDtoList) {
+            BeanUtils.copyProperties(cartItem,cart);
             cartService.putIntoCart(cart);
         }
     }
-
 
     @DeleteMapping("/")
     ResponseDto<Cart> deleteCartItem(@RequestBody String customerId, String productId, String merchantId){

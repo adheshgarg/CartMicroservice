@@ -2,9 +2,10 @@ package com.project.cartandordermicroservice.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -16,7 +17,11 @@ public class Order {
 
     @Id
     @Column(name = "order_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private String orderId;
     private String customerId;
     private Date date;

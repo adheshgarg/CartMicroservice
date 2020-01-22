@@ -2,6 +2,8 @@ package com.project.cartandordermicroservice.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Setter
@@ -14,11 +16,15 @@ public class Cart {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private String id;
     private String customerId;
     private String productId;
     private String merchantId;
-    private Integer quantity;
+    private Integer productQuantity;
 
 }

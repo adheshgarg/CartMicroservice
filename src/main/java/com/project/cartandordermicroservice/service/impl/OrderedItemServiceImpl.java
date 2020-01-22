@@ -17,8 +17,4 @@ public class OrderedItemServiceImpl implements OrderedItemService {
         return orderedItemRepository.save(orderedItem);
     }
 
-    @Override
-    public Iterable<OrderedItem> addOrderedItem(Iterable<OrderedItem> orderedItem) {
-        return orderedItemRepository.saveAll(orderedItem);
-    }
 }

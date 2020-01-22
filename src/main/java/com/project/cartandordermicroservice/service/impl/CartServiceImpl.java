@@ -6,6 +6,8 @@ import com.project.cartandordermicroservice.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartServiceImpl implements CartService {
 
@@ -13,7 +15,7 @@ public class CartServiceImpl implements CartService {
     CartRepository cartRepository;
 
     @Override
-    public Iterable<Cart> getCart(String customerId) {
+    public List<Cart> getCart(String customerId) {
         return cartRepository.getCartByCustomer(customerId);
     }
 

@@ -11,6 +11,6 @@ public class CartDto {
     private String customerId;
     private String productId;
     private String merchantId;
-    private Integer quantity;
+    private Integer quantityBrought;
 
 }
