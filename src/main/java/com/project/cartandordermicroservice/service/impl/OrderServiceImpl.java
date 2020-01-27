@@ -1,5 +1,6 @@
 package com.project.cartandordermicroservice.service.impl;
 
+import com.project.cartandordermicroservice.dto.CartDto;
 import com.project.cartandordermicroservice.dto.OrderDto;
 import com.project.cartandordermicroservice.dto.OrderedItemDto;
 import com.project.cartandordermicroservice.entity.Order;
@@ -34,34 +35,46 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    public List<Order> getOrders(String customerId) {
+        return orderRepository.findByCustomerIdOrderByDateDesc(customerId);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public Order createOrder(OrderDto orderDto) {
+
         Order order=new Order();
         List<OrderedItemDto> orderedItemDtos=orderDto.getOrderedItemDto();
         BeanUtils.copyProperties(orderDto,order, String.valueOf(orderedItemDtos));
         order.setDate(new Date());
-        Order createdOrder=orderRepository.save(order);         //new order
         int totalPrice = 0;
-        final String uri="http://localhost:8080/productdetails/stockUpdate";
+        final String uri="http://10.177.68.40:8762/spring-cloud-eureka-client-merchant/merchant/productdetails/stockUpdate";
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Iterable<OrderedItemDto>> entityReq=new HttpEntity<>(orderedItemDtos,headers);
+        HttpEntity<List<OrderedItemDto>> entityReq=new HttpEntity<>(orderedItemDtos,headers);
         RestTemplate restTemplate=new RestTemplate();
-        boolean result=restTemplate.postForObject(uri,entityReq,boolean.class,orderDto);
+        boolean result=restTemplate.postForObject(uri,entityReq,boolean.class);
+        Order createdOrder=null;        //new order
         if(result) {
+            createdOrder=orderRepository.save(order);
             for (OrderedItemDto orderedItemDto : orderedItemDtos) {
                 OrderedItem orderedItem = new OrderedItem();
                 BeanUtils.copyProperties(orderedItemDto, orderedItem);
                 orderedItem.setProductPrice(orderedItemDto.getProductPrice());
                 orderedItem.setQuantityBrought(orderedItemDto.getQuantityBrought());
-                orderedItem.setOrderId(createdOrder);
+                orderedItem.setOrderId(createdOrder.getOrderId());
+                orderedItem.setIsReviewed(false);
                 totalPrice += orderedItem.getProductPrice() * orderedItem.getQuantityBrought();
                 orderedItemService.addOrderedItem(orderedItem);
-                cartService.removeCartItem(orderDto.getCustomerId(), orderedItem.getProductId(), orderedItem.getMerchantId());
+                CartDto cartDto=new CartDto();
+                cartDto.setCustomerId(orderDto.getCustomerId());
+                cartDto.setProductId(orderedItem.getProductId());
+                cartDto.setMerchantId(orderedItem.getMerchantId());
+                cartService.removeCartItem(cartDto);
             }
             createdOrder.setTotalPrice(totalPrice);
         }
-        return createdOrder;
+        return orderRepository.save(createdOrder);
     }
 
 }

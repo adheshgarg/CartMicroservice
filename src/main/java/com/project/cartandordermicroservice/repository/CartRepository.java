@@ -1,5 +1,6 @@
 package com.project.cartandordermicroservice.repository;
 
+import com.project.cartandordermicroservice.dto.CartPageDto;
 import com.project.cartandordermicroservice.entity.Cart;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

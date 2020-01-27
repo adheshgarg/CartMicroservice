@@ -6,6 +6,8 @@ import com.project.cartandordermicroservice.service.OrderedItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class OrderedItemServiceImpl implements OrderedItemService {
 
@@ -17,4 +19,8 @@ public class OrderedItemServiceImpl implements OrderedItemService {
         return orderedItemRepository.save(orderedItem);
     }
 
+    @Override
+    public List<OrderedItem> orderedItems(String orderId) {
+        return orderedItemRepository.findByOrderId(orderId);
+    }
 }

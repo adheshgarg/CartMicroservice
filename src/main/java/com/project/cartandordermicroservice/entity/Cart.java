@@ -25,6 +25,6 @@ public class Cart {
     private String customerId;
     private String productId;
     private String merchantId;
-    private Integer productQuantity;
+    private Integer quantityBrought;
 
 }
